@@ -6,5 +6,6 @@ target 'LocalDBUsingRealm' do
   use_frameworks!
 
   # Pods for LocalDBUsingRealm
+  pod "RealmSwift"
 
 end

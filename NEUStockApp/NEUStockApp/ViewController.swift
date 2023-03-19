@@ -12,6 +12,10 @@ import SwiftSpinner
 
 class ViewController: UIViewController {
     
+    var txtField: UITextField?
+    
+    var stockSymbol = ""
+    
     @IBOutlet weak var txtStockSymbol: UITextField!
     
     @IBOutlet weak var lblStockPrice: UILabel!
@@ -50,6 +54,40 @@ class ViewController: UIViewController {
 //            print("Volume = \(volume)")
             self.lblStockPrice.text = "Price = \(price) $"
         }
+    }
+    
+    @IBAction func addStockToDB(_ sender: Any) {
+        let alertController = UIAlertController(title: "Add Stocks to DB", message: "Type Stock Symbol", preferredStyle: .alert)
+        
+        let OKButton = UIAlertAction(title: "OK", style: .default){ action in
+            guard let symbol = self.txtField?.text else {return}
+            self.findAndAddStockToLocalDB(symbol: symbol)
+        }
+        
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel){ action in
+        }
+        
+        alertController.addTextField{ lblTextField in
+            self.txtField = lblTextField
+            lblTextField.placeholder = "Type Stock value"
+        }
+        
+        // add the 2 buttons in alertController
+        alertController.addAction(OKButton)
+        alertController.addAction(cancelButton)
+        
+        // alertController is not presented on the screen, I only created the variable, so I'll add it on the screen
+        self.present(alertController, animated: true)
+    }
+    
+    func findAndAddStockToLocalDB(symbol : String){
+        // if the stock already exist in the DB then don't do anything
+        
+        // Make a network call for the stock symbol
+        
+        // if the stock symbol exist, then add it to the DB
+        
+        //Otherwise don't do anything
     }
     
 }
