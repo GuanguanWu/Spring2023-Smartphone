@@ -10,5 +10,6 @@ target 'NEUStockApp' do
   pod "SwiftSpinner"
   pod 'Alamofire'
   pod 'SwiftyJSON', '~> 4.0'
+  pod "RealmSwift"
 
 end

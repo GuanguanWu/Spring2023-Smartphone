@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>102556067790-r4d521r675def2vvdmgtgmjjgll0g9kn.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.102556067790-r4d521r675def2vvdmgtgmjjgll0g9kn</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD5BN1qr3XbmgBGketX2D5PcIJPAPbiIZU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>102556067790</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>edu.northeastern.guanguan.LoginExampleFirebase</string>
+	<key>PROJECT_ID</key>
+	<string>neuspring2023-151b7</string>
+	<key>STORAGE_BUCKET</key>
+	<string>neuspring2023-151b7.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:102556067790:ios:61677db99db262f4f8ad9f</string>
+</dict>
+</plist>
