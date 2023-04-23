@@ -1,22 +1,24 @@
 //
 //  UploadImageViewController.swift
-//  InstaWithoutDBAndCloud
+//  FinalProject
 //
-//  Created by Wu Guanguan on 4/21/23.
+//  Created by Wu Guanguan on 4/22/23.
 //
 
 import UIKit
 import CoreLocation
+import RealmSwift
 
-class UploadImageViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+class UploadImageViewController: UITabBarController, UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+
     
-    @IBOutlet weak var lblLocation: UILabel!
-    @IBOutlet weak var txtTitile: UITextField!
     @IBOutlet weak var imgView: UIImageView!
+    @IBOutlet weak var txtTitle: UITextField!
+    @IBOutlet weak var lblLocation: UILabel!
     
     let locationManager = CLLocationManager()
-    
     var uploadProtocol: UploadImageProtocol?
+    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,12 +74,29 @@ class UploadImageViewController: UIViewController, UIImagePickerControllerDelega
     @IBAction func uploadAction(_ sender: Any) {
         guard let img = imgView.image else {return}
         guard let location = lblLocation.text else {return}
-        guard let title = txtTitile.text else {return}
+        guard let title = txtTitle.text else {return}
         
+        let imageData: Data? = img.pngData()
+        
+        let imgData: InstaImageCelldata = InstaImageCelldata()
+        
+        imgData.title = title
+        imgData.location = location
+        imgData.Image = imageData
+        
+        
+        // Add to the Realm
+        do {
+            try realm.write {
+                realm.add(imgData, update: .modified)
+            }
+        }
+        catch let error as NSError {
+            print("Unable to add values to the DB " + error.localizedDescription)
+        }
         uploadProtocol?.uploadedImageDelegate(img: img, locationImg: location, titleImg: title)
+        }
     }
-    
-    
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error)
@@ -100,8 +119,9 @@ class UploadImageViewController: UIViewController, UIImagePickerControllerDelega
                 address += place.name!
             }
             
-            self.lblLocation.text = "Location: \(address)"
+//            self.lblLocation.text = "Location: \(address)"
+            
+//            self.tabBarController.selectedIndex = 0
         }
-    }
-    
+
 }

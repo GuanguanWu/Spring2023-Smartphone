@@ -1,19 +1,23 @@
 //
 //  UploadImageViewController.swift
-//  InstaWithoutDBAndCloud
+//  ThreeTabBar
 //
-//  Created by Wu Guanguan on 4/21/23.
+//  Created by Wu Guanguan on 4/22/23.
 //
 
 import UIKit
 import CoreLocation
+import RealmSwift
 
-class UploadImageViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+class UploadImageViewController: UIViewController, UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+
     
-    @IBOutlet weak var lblLocation: UILabel!
-    @IBOutlet weak var txtTitile: UITextField!
     @IBOutlet weak var imgView: UIImageView!
+    @IBOutlet weak var txtTitle: UITextField!
+    @IBOutlet weak var lblLocation: UILabel!
     
+    let realm = try! Realm()
+ 
     let locationManager = CLLocationManager()
     
     var uploadProtocol: UploadImageProtocol?
@@ -24,10 +28,13 @@ class UploadImageViewController: UIViewController, UIImagePickerControllerDelega
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.requestLocation()
+        
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
     }
     
     
     @IBAction func takeAPicture(_ sender: Any) {
+        
         let actionSheet = UIAlertController(title: "Take a Picture", message: "something", preferredStyle: .alert)
         
         let cameraAction = UIAlertAction(title: "Camera", style: .default){ action in
@@ -61,6 +68,7 @@ class UploadImageViewController: UIViewController, UIImagePickerControllerDelega
         self.present(actionSheet, animated: true)
     }
     
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
             imgView.image = image
@@ -69,14 +77,33 @@ class UploadImageViewController: UIViewController, UIImagePickerControllerDelega
     }
     
     
+    
+    
     @IBAction func uploadAction(_ sender: Any) {
         guard let img = imgView.image else {return}
         guard let location = lblLocation.text else {return}
-        guard let title = txtTitile.text else {return}
+        guard let title = txtTitle.text else {return}
         
         uploadProtocol?.uploadedImageDelegate(img: img, locationImg: location, titleImg: title)
+        
+        let imageData: Data? = img.jpegData(compressionQuality: 0.5)
+             
+             let imgData: ImageData = ImageData()
+             imgData.title = title
+             imgData.location = location
+             imgData.Image = imageData
+        
+        
+        do {
+            try realm.write {
+                realm.add(imgData, update: .modified)
+            }
+        } catch let error as NSError {
+            print("Unable to add values to the DB " + error.localizedDescription)
+        }
+        
+        self.tabBarController?.selectedIndex = 0
     }
-    
     
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -103,5 +130,4 @@ class UploadImageViewController: UIViewController, UIImagePickerControllerDelega
             self.lblLocation.text = "Location: \(address)"
         }
     }
-    
 }

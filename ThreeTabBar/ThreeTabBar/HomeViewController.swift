@@ -1,13 +1,16 @@
 //
 //  HomeViewController.swift
-//  InstaWithoutDBAndCloud
+//  ThreeTabBar
 //
-//  Created by Wu Guanguan on 4/21/23.
+//  Created by Wu Guanguan on 4/22/23.
 //
 
 import UIKit
+import RealmSwift
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UploadImageProtocol {
+    
+    let realm  = try! Realm()
 
     var images : [UIImage] = [UIImage]()
     var locations = [String]()
@@ -16,43 +19,32 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet weak var tblView: UITableView!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let controller = navigationController?.tabBarController
+        let controller = navigationController?.tabBarController
         uploadImageVC = navigationController?.tabBarController?.viewControllers?[0]
         print(uploadImageVC?.title)
+        getData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             imageTitles.count
     }
-        
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
     
-        for (idx, e) in cell.contentView.subviews.enumerated() {
-            switch idx {
-            case 0:
-                let te = e as! UIImageView
-                te.image = images[indexPath.row]
-            case 1:
-                let te = e as! UILabel
-                te.text = locations[indexPath.row]
-            case 2:
-                let te = e as! UILabel
-                te.text = imageTitles[indexPath.row]
-            default:
-                continue
-            }
-        }
-        return cell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = Bundle.main.loadNibNamed("TableViewCell", owner: self)?.first as! TableViewCell
+
+            cell.imageContainer.image = images[indexPath.row]
+            cell.lblTitle.text = imageTitles[indexPath.row]
+            cell.lblLocation.text = locations[indexPath.row]
+
+            return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 350
+            return 500
         }
-        
+    
     func uploadedImageDelegate(img: UIImage, locationImg: String, titleImg: String) {
         images.append(img)
         locations.append(locationImg)
@@ -60,5 +52,23 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         tblView.reloadData()
     }
+    
+    func getData(){
+        
+        let imageInfos = realm.objects(ImageData.self)
+                
+                
+        for imageInfo in imageInfos {
+            guard let img = UIImage(data: imageInfo.Image!) else { return }
+            let title = imageInfo.title
+            let location = imageInfo.location
+            
+            images.append(img)
+            imageTitles.append(title)
+            locations.append(location)
+        }
+         tblView.reloadData()
+    }
+    
 
 }
